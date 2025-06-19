@@ -1,160 +1,121 @@
-Introduction:
 
-Ce projet est une application de gestion de voitures construite avec le framework Symfony 7.1. 
-L'objectif est de fournir une interface utilisateur intuitive pour les administrateurs et les employés afin de gérer les entités telles que les voitures, les avis et les témoignages.
-Le déploiement est géré via Docker pour simplifier l'intégration et le déploiement continu.
+# 🚗 Application de Gestion de Voitures - Symfony 7.1
 
-Pré-requis:
+Ce projet est une application web construite avec Symfony 7.1. Elle permet aux administrateurs et employés de gérer des entités comme les voitures, les avis et les témoignages, avec une interface intuitive. Le déploiement se fait via Docker pour une intégration et une livraison continues simplifiées.
+
+## 🛠️ Prérequis
 
 - PHP 8.2 ou supérieur
 - Composer 2.x
-- Docker et Docker Compose
-- Node.js et npm (pour la gestion des assets)
-- Extension PHP intl pour la gestion des dates et heures
-- Installation et Déploiement avec Docker
+- Docker & Docker Compose
+- Node.js & npm
+- Extension PHP `intl`
 
+## 🚀 Installation & Déploiement avec Docker
 
-1. Cloner le Répertoire
-bash
-Copier le code
-git clone https://github.com/Jaygit93/jay_garage.git
+### 1. Cloner le Répertoire
+
+```bash
+git clone <url-du-repo>
 cd projet-voitures
+```
 
+### 2. Configuration des Variables d'Environnement
 
-2. Configuration des Variables d'Environnement
-Créez un fichier .env.local à la racine du projet et configurez les variables nécessaires :
+Créer un fichier `.env.local` à la racine et ajouter :
 
-
-Copier le code
-DATABASE_URL=mysql://root:password@mysql:3306/symfony
-
+```env
+DATABASE_URL=mysql://user:password@mysql:3306/symfony
 APP_ENV=dev
-
 APP_SECRET=some_secret
-
 FIREBASE_API_KEY=your_firebase_api_key
+```
 
+### 3. Construction & Démarrage des Conteneurs
 
-3. Construction et Démarrage des Conteneurs
-Lancez la commande suivante pour démarrer les conteneurs Docker :
-bash
-Copier le code
+```bash
 docker-compose up --build
+```
 
+### 4. Installation des Dépendances
 
-4. Installation des Dépendances
-Installez les dépendances PHP et JavaScript :
-
-bash
-Copier le code
+```bash
 docker-compose exec php composer install
 docker-compose exec node npm install
+```
 
+### 5. Initialisation de la Base de Données
 
-5. Initialisation de la Base de Données
-Mettez à jour le schéma de la base de données :
-
-bash
-Copier le code
+```bash
 docker-compose exec php php bin/console doctrine:migrations:migrate
+```
 
+### 6. Accès à l'Application
 
-6. Accéder à l'Application
-L'application est maintenant accessible à l'adresse http://localhost:8000.
+Ouvrez [http://localhost:8000](http://localhost:8000) dans votre navigateur.
 
-Architecture du Projet
-L'architecture du projet est basée sur les principes MVC (Modèle-Vue-Contrôleur) de Symfony, avec une organisation spécifique pour les dashboards et les rôles utilisateur.
+## 🏗️ Architecture du Projet
 
-arduino
-Copier le code
+```txt
 ├── src
 │   ├── Controller
 │   │   ├── Admin
-│   │   ├── Employee
+│   │   └── Employee
 │   ├── Entity
 │   ├── Repository
 │   ├── Security
 │   ├── Service
-│   ├── Form
+│   └── Form
 ├── config
 ├── public
 ├── templates
 └── migrations
-Les Entités
-Utilisateur
-Propriétés :
+```
 
-id: Identifiant unique
-email: Email de l'utilisateur
-password: Mot de passe (haché)
-roles: Rôles de l'utilisateur (ROLE_ADMIN, ROLE_EMPLOYE)
-roleUtilisateur: Type d'utilisateur (admin ou employe)
-voitures: Relation avec les voitures possédées
-Voiture
-Propriétés :
+## 📦 Entités Principales
 
-id: Identifiant unique
-marqueVoiture: Marque de la voiture
-modeleVoiture: Modèle de la voiture
-prixVoiture: Prix de la voiture
-anneeVoiture: Année de fabrication
-kilometrageVoiture: Kilométrage
-imageVoiture: URL de l'image de la voiture
-equipementsVoiture: Liste des équipements
-caracteristiquesVoiture: Liste des caractéristiques techniques
-boiteVoiture: Type de boîte (manuelle, automatique)
-utilisateur: Relation avec l'utilisateur (propriétaire)
+### Utilisateur
 
+- `id`, `email`, `password`, `roles`, `roleUtilisateur`, `voitures`
 
-Avis
-Propriétés :
+### Voiture
 
-id: Identifiant unique
-titre: Titre de l'avis
-contenu: Contenu de l'avis
-note: Note sur 5
-createdAt: Date de création
+- `id`, `marqueVoiture`, `modeleVoiture`, `prixVoiture`, `anneeVoiture`, `kilometrageVoiture`, `imageVoiture`, `equipementsVoiture`, `caracteristiquesVoiture`, `boiteVoiture`, `utilisateur`
 
+### Avis
 
-Témoignage
-Propriétés :
+- `id`, `titre`, `contenu`, `note`, `createdAt`
 
-id: Identifiant unique
-nom: Nom de l'auteur
-contenu: Contenu du témoignage
-createdAt: Date de création
-Service
-Propriétés :
+### Témoignage
 
-id: Identifiant unique
-nom: Nom du service
-description: Description du service
-prix: Prix du service
+- `id`, `nom`, `contenu`, `createdAt`
 
+### Service
 
-Les Contrôleurs
+- `id`, `nom`, `description`, `prix`
 
-Contrôleurs Admin
-Les contrôleurs pour les administrateurs sont situés dans src/Controller/Admin. Ils gèrent toutes les entités du système, avec un accès complet.
+## 🎮 Contrôleurs
 
-DashboardController: Gestion du tableau de bord principal
-UserCrudController: Gestion des utilisateurs
-VoitureCrudController: Gestion des voitures
-AvisCrudController: Gestion des avis
-TemoignageCrudController: Gestion des témoignages
-Contrôleurs Employé
-Les contrôleurs pour les employés sont situés dans src/Controller/Employee. Ils ont un accès restreint, uniquement aux entités qui leur sont attribuées.
+### Admin (`src/Controller/Admin`)
 
-EmployeeDashboardController: Tableau de bord des employés
-VoitureCrudController: Gestion des voitures liées à l'employé connecté
-AvisCrudController: Gestion des avis
-TemoignageCrudController: Gestion des témoignages
-Dashboard avec EasyAdmin
-Dashboard Administrateur
-Les administrateurs ont accès à toutes les entités du système. Ils peuvent ajouter, modifier ou supprimer des utilisateurs, voitures, avis, témoignages, et services.
+- `DashboardController`
+- `UserCrudController`
+- `VoitureCrudController`
+- `AvisCrudController`
+- `TemoignageCrudController`
 
-php
-Copier le code
+### Employé (`src/Controller/Employee`)
+
+- `EmployeeDashboardController`
+- `VoitureCrudController`
+- `AvisCrudController`
+- `TemoignageCrudController`
+
+## 📊 Dashboards avec EasyAdmin
+
+### Administrateur
+
+```php
 public function configureMenuItems(): iterable
 {
     yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
@@ -163,55 +124,42 @@ public function configureMenuItems(): iterable
     yield MenuItem::linkToCrud('Avis', 'fas fa-comment', Avis::class);
     yield MenuItem::linkToCrud('Témoignages', 'fas fa-comments', Temoignage::class);
 }
-Dashboard Employé
-Les employés ont accès uniquement aux entités qui leur sont attribuées. Par exemple, ils peuvent gérer les voitures dont ils sont propriétaires et consulter les avis et témoignages.
+```
 
-php
-Copier le code
+### Employé
+
+```php
 public function configureMenuItems(): iterable
 {
     yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
     yield MenuItem::linkToCrud('Avis', 'fas fa-comment', Avis::class);
     yield MenuItem::linkToCrud('Témoignages', 'fas fa-comments', Temoignage::class);
 }
+```
 
+## 📩 Formulaire de Contact avec Firebase
 
-Utilisation de Firebase pour le Formulaire de Contact
-Le projet utilise l'API Firebase pour envoyer les messages du formulaire de contact. Le bundle kreait/firebase-bundle est utilisé pour interagir avec l'API Firebase.
+### Installation
 
-Configuration
-Installez le bundle Firebase :
-
-bash
-Copier le code
+```bash
 composer require symfony/firebase-bundle
-Configurez Firebase dans le fichier config/packages/firebase.yaml :
+```
 
-yaml
-Copier le code
+### Configuration `config/packages/firebase.yaml`
+
+```yaml
 firebase:
     credentials: '%kernel.project_dir%/config/firebase_credentials.json'
     database:
         url: 'https://your-database-url.firebaseio.com'
-Utilisation dans un contrôleur :
+```
 
-php
-Copier le code
-namespace App\Controller;
+### Exemple de Contrôleur
 
-use Kreait\Firebase\Database;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
+```php
 class ContactController extends AbstractController
 {
-    private $database;
-
-    public function __construct(Database $database)
-    {
-        $this->database = $database;
-    }
+    public function __construct(private Database $database) {}
 
     public function contactForm(Request $request): Response
     {
@@ -226,38 +174,40 @@ class ContactController extends AbstractController
         return $this->json(['status' => 'Message envoyé avec succès !']);
     }
 }
+```
 
+## ✅ Tests
 
-Tests
-Les tests unitaires et fonctionnels sont essentiels pour garantir la stabilité du projet.
+### Tests Unitaires
 
-Tests Unitaires :
-
-bash
-Copier le code
+```bash
 php bin/phpunit --testsuite=unit
+```
 
+### Tests Fonctionnels
 
-Tests Fonctionnels :
-
-bash
-Copier le code
+```bash
 php bin/phpunit --testsuite=functional
-Tests avec Behat :
+```
 
-bash
-Copier le code
+### Tests Behat
+
+```bash
 vendor/bin/behat
-Contribution
-Les contributions sont les bienvenues ! Pour contribuer :
+```
 
-Forkez le projet.
-Créez une branche pour votre fonctionnalité (git checkout -b ma-fonctionnalité).
-Commitez vos modifications (git commit -am 'Ajoute une nouvelle fonctionnalité').
-Poussez vers la branche (git push origin ma-fonctionnalité).
-Créez une Pull Request.
-Support
-Pour toute question ou problème, veuillez ouvrir une issue sur GitHub.
+## 🤝 Contribution
 
-Licence
-Ce projet est sous licence MIT. Vous êtes libre de l'utiliser et de le modifier selon vos besoins.
+1. Forkez le repo
+2. Créez votre branche (`git checkout -b feature/ma-fonctionnalite`)
+3. Commitez (`git commit -am 'Ajoute une fonctionnalité'`)
+4. Poussez (`git push origin feature/ma-fonctionnalite`)
+5. Créez une Pull Request
+
+## 🆘 Support
+
+Ouvrez une issue GitHub en cas de problème.
+
+## 📄 Licence
+
+Ce projet est sous licence MIT.
