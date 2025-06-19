@@ -1,0 +1,27 @@
+:80 {
+    root * /var/www/public
+    file_server
+    encode gzip
+
+    php_fastcgi php:9000 {
+        env SCRIPT_FILENAME /var/www/public/index.php
+    }
+
+    # Redirection HTTP vers HTTPS
+    @http {
+        protocol http
+    }
+    redir @http https://{host}{uri}
+}
+
+localhost:8443 {
+    root * /var/www/public
+    file_server
+    encode gzip
+
+    php_fastcgi php:9000 {
+        env SCRIPT_FILENAME /var/www/public/index.php
+    }
+
+    tls /etc/ssl/localhost.pem /etc/ssl/localhost-key.pem
+}

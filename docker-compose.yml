@@ -1,0 +1,98 @@
+services:
+  php:
+    build: .
+    volumes:
+      - .:/var/www/:cached
+    environment:
+      - PHP_IDE_CONFIG=serverName=docker
+    ports:
+      - "9003:9003" # Pour exporter les métriques PHP-FPM
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.3
+    environment:
+      MYSQL_ROOT_PASSWORD: passroot
+      MYSQL_DATABASE: garage
+      MYSQL_USER: rageuser
+      MYSQL_PASSWORD: passgarage
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: passroot
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "8443:8443"
+    depends_on:
+      - php
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./ssl:/etc/ssl
+      - ./public:/var/www/public
+    environment:
+      - PHP_FPM_HOST=php:9000
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - prometheus
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.1
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - app-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.1
+    ports:
+      - "5601:5601"
+    networks:
+      - app-network
+    depends_on:
+      - elasticsearch
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  es-data:

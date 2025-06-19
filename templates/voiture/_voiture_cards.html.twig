@@ -1,0 +1,55 @@
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 custom-responsive">
+    {% for voiture in voitures %}
+        <div class="col mb-4">
+            <div class="card h-100" style="border: 1px solid #b0bec5; border-radius: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)" role="region" aria-labelledby="voiture-title-{{ voiture.id }}">
+                <img 
+                    src="{{ voiture.imageVoitureUrl }}" 
+                    class="card-img-top" 
+                    alt="Image de la voiture {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}" 
+                    style="height: 150px; object-fit: cover; border-radius: 15px 15px 0 0; background-color: #F0F0F0"
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top" 
+                    title="Image de {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}">
+                
+                <div class="card-body text-center" style="background-color: #f8f9fa;">
+                    <h5 id="voiture-title-{{ voiture.id }}" class="card-title" style="color: #00839b; font-weight: bold;">
+                        <u>
+                            <a 
+                                href="{{ path('voiture_details', {'id': voiture.id}) }}" 
+                                style="text-decoration: none; color: #00839b;" 
+                                aria-label="Voir les détails de la voiture {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}"
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="Cliquez pour voir les détails de la voiture {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }} ">
+                                {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}
+                            </a>
+                        </u>
+                    </h5>
+                    <p>Prix : {{ voiture.prixVoiture }} €</p>
+                    <p>Kilométrage : {{ voiture.kilometrageVoiture }} km</p>
+                    <p>Année : {{ voiture.anneeVoiture }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a 
+                        href="{{ path('voiture_details', {'id': voiture.id}) }}" 
+                        class="btn btn-secondary" 
+                        style="border-radius: 10px;" 
+                        aria-label="Voir les détails complets de la voiture {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}"
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Voir les détails complets de la voiture {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}">
+                        Voir Détails
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Activer les tooltips de Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>

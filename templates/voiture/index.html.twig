@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Voitures{% endblock %}
+
+{% block body %}
+<section class="container mt-5" style="background: #5b6c86; padding: 8vw">
+    <h1 class="text-center mb-4" style="color: #ffb763; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);">Nos Voitures</h1>
+
+    <!-- Formulaire de filtres -->
+    <form method="get" class="mb-5 p-4" style="background-color: #939597; border-radius: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+        <div class="row">
+            <!-- Filtrer par marque -->
+            <div class="col-md-3">
+                <label for="marque" class="form-label" style="color: #00839b; font-weight: bold;">Marque</label>
+                <select name="marque" id="marque" class="form-select">
+                    <option value="">Toutes les marques</option>
+                    <option value="Renault">Renault</option>
+                    <option value="Peugeot">Peugeot</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Ford">Ford</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Audi">Audi</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                    <option value="Mercedes-Benz">Mercedes-Benz</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Subaru">Subaru</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Kya">Kya</option>
+                </select>
+            </div>
+
+            <!-- Filtrer par prix -->
+            <div class="col-md-3">
+                <label for="prix" class="form-label" style="color: #00839b; font-weight: bold;">Prix</label>
+                <select name="prix" id="prix" class="form-select">
+                    <option value="">Tous les prix</option>
+                    <option value="10000-15000">10000 - 15000</option>
+                    <option value="15000-20000">15000 - 20000</option>
+                    <option value="20000-25000">20000 - 25000</option>
+                    <option value="25000-30000">25000 - 30000</option>
+                    <option value="30000-35000">30000 - 35000</option>
+                    <option value="35000-40000">35000 - 40000</option>
+                </select>
+            </div>
+
+            <!-- Filtrer par année -->
+            <div class="col-md-3">
+                <label for="annee" class="form-label" style="color: #00839b; font-weight: bold;">Année</label>
+                <select name="annee" id="annee" class="form-select">
+                    <option value="">Toutes les années</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                </select>
+            </div>
+
+            <!-- Filtrer par boîte de vitesse -->
+            <div class="col-md-3">
+                <label for="boite" class="form-label" style="color: #00839b; font-weight: bold;">Boîte de vitesse</label>
+                <select name="boite" id="boite" class="form-select">
+                    <option value="">Toutes les boîtes</option>
+                    <option value="manuelle">Manuelle</option>
+                    <option value="automatique">Automatique</option>
+                </select>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-secondary" style="border-radius: 10px;">Filtrer</button>
+        </div>
+    </form>
+
+    <div class="row" id="voiture-cards">
+    {% include 'voiture/_voiture_cards.html.twig' with {'voitures': voitures} %}
+</div>
+
+<div class="text-center mt-4">
+    <button id="load-more" class="btn btn-primary" style="border-radius: 5px;" data-offset="12">
+        Afficher plus
+    </button>
+</div>
+
+<script>
+    document.getElementById('load-more').addEventListener('click', function() {
+        const button = this;
+        const offset = button.getAttribute('data-offset');
+
+        fetch(`/voitures/load-more?offset=${offset}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('voiture-cards').insertAdjacentHTML('beforeend', data.html);
+                button.setAttribute('data-offset', parseInt(offset) + 8);
+            })
+            .catch(error => console.error('Erreur lors du chargement:', error));
+    });
+</script>
+
+
+<!-- Intégration de Bootstrap via CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

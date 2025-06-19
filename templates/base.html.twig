@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Découvrez notre large sélection de voitures disponibles à la location. Réservez en ligne dès maintenant à des prix compétitifs.">
+    <meta name="keywords" content="automobile, ParrotGarage, voitures à louer, services auto, voitures à la location, réservation de voitures, services automobiles, avis clients, témoignages clients">
+
+    <title>{% block title %}Mon Site{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body id="page-body">
+<nav class="navbar navbar-expand-lg" id="navbar" aria-label="Menu principal">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('homepage') }}">
+            <img src="{{ asset('image/logo.png') }}" alt="Logo" class="img-fluid" id="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('voitures_liste') }}" id="nav-voitures">Voitures</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('contact') }}" id="nav-contact">Contact</a>
+                </li>
+                
+                {% if app.user %}
+                    {% if app.user.roleUtilisateur == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('admin_dashboard') }}" id="nav-admin">Admin Dashboard</a>
+                        </li>
+                    {% elseif app.user.roleUtilisateur == 'employe' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('employe_dashboard') }}" id="nav-employe">Employee Dashboard</a>
+                        </li>
+                    {% elseif app.user.roleUtilisateur == 'client' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_profile') }}" id="nav-profile">Profil</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}" id="nav-logout">Déconnexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_inscription') }}" id="nav-inscription">Inscription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}" id="nav-login">Connexion</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+
+        <!-- Bandeau d'acceptation des cookies RGPD -->
+    <div id="cookieConsent" class="fixed-bottom bg-dark text-white p-3" style="display: none;">
+        <div class="container d-flex justify-content-between">
+            <span>
+                Nous utilisons des cookies pour améliorer votre expérience. En poursuivant la navigation sur ce site, vous acceptez notre utilisation des cookies. 
+                <a href="{{ path('politique_confidentialite') }}" class="text-primary">En savoir plus</a>.
+            </span>
+            <button id="acceptCookies" class="btn btn-primary">Accepter</button>
+        </div>
+    </div>
+
+    <script>
+        // Gestion du consentement des cookies
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!sessionStorage.getItem("cookiesAccepted")) {
+                document.getElementById("cookieConsent").style.display = "block";
+            }
+            document.getElementById("acceptCookies").onclick = function () {
+                sessionStorage.setItem("cookiesAccepted", "true");
+                document.getElementById("cookieConsent").style.display = "none";
+            };
+        });
+    </script>
+
+    <!-- Inclure le footer -->
+    {{ render(controller('App\\Controller\\FooterController::horairesOuverture')) }}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

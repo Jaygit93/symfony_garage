@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="position-relative text-center text-white">
+        <!-- Affichage de l'image avec le chemin correct -->
+        <img src="{{ asset('image/home.jpg') }}" alt="Image de fond" class="img-fluid w-100" style="height: 400px; object-fit: cover;">
+
+        <!-- Titre centré sur l'image -->
+        {% if app.user %}
+            <h1 class="position-absolute top-50 start-50 translate-middle mt-5" style="color: #ffb763; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);">
+                Bienvenue {{ app.user.nomUtilisateur }} {{ app.user.prenomUtilisateur }} sur ParrotGarage
+            </h1>
+        {% else %}
+            <h1 class="position-absolute top-50 start-50 translate-middle mt-5" style="color: #ffb763; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);">
+                Bienvenue sur ParrotGarage
+            </h1>
+        {% endif %}
+    </div>
+
+
+<!-- Section des services -->
+<section style="background: #5b6c86">
+    <div class="container mt-5 p-4" style="border: 3px solid #8b8b8b;">
+        <h3 id="avis-section" class="text-center mt-4 mb-4" style="font-weight: bold; font-size: 2rem; color: #ffb763; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);">Nos Services</h3>
+        <div class="row justify-content-center">
+            {% for service in services %}
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card shadow-sm" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;">
+                        {% if service.imageServiceUrl %}
+                            <img src="{{ service.imageServiceUrl }}" alt="Image du service" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body text-center" style="background-color: #f8f9fa;">
+                            <h5 class="card-title" style="color: #00839b;">{{ service.titreService }}</h5>
+                            <p class="card-text">{{ service.descriptionService }}</p>
+                            <a href="#" class="btn btn-secondary mt-3" style="border-radius: 10px;">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">Aucun service disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Section des avis -->
+<section style="background-color: #5b6c86; border: 3px solid #8b8b8b;">
+    <h2 id="avis-section" class="text-center mt-4 mb-4" style="font-weight: bold; font-size: 2rem; color: #ffb763; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);">Avis de nos utilisateurs</h2>
+
+    <div id="avisCarousel" class="carousel slide mt-4 p-4 border" data-bs-ride="carousel" style="max-width: 600px; margin: auto;">
+        <div class="carousel-inner">
+            {% for avis in avis_list %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}" style="padding: 20px; background-color: #ecf0f1; border-radius: 10px;">
+                    <div class="text-center">
+                        <h3 style="color: #00839b;">{{ avis.nomAvis }}</h3>
+                        <p style="font-style: italic;">{{ avis.commentaireAvis }}</p>
+                        <div class="stars" style="color: #f39c12;">
+                            {% for i in 1..avis.noteAvis %}
+                                ⭐
+                            {% endfor %}
+                        </div>
+                        <p style="color: #7f8c8d;">publié le {{ avis.datePublicationAvis|date('d/m/Y') }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">Aucun avis disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Contrôles du carrousel -->
+        <a class="carousel-control-prev" href="#avisCarousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only"></span>
+        </a>
+        <a class="carousel-control-next" href="#avisCarousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only text-dark"></span>
+        </a>
+    </div>
+
+    <!-- Messages ou formulaire pour ajouter un avis -->
+    {% if app.user %}
+        {% if existing_avis %}
+            <p class="text-center mt-5" style="font-size: 1.2rem; color: #27ae60;">Vous avez déjà soumis un avis. Merci pour votre retour !</p>
+        {% else %}
+            <div class="container mt-5 p-4">
+                <h3 class="" style="color: #ffb763;">Ajouter votre avis</h3>
+                {{ form_start(avis_form) }}
+                    <div class="form-group mt-3">
+                        {{ form_label(avis_form.nomAvis, null, {'label_attr': {'style': 'font-weight: bold; color: #fff;'}}) }}
+                        {{ form_widget(avis_form.nomAvis, {'attr': {'class': 'form-control', 'style': 'border: 0px solid black; width: 30%'}}) }}
+                        {{ form_errors(avis_form.nomAvis) }}
+                    </div>
+                    <div class="form-group mt-3">
+                        {{ form_label(avis_form.commentaireAvis, null, {'label_attr': {'style': 'font-weight: bold; color: #fff;'}}) }}
+                        {{ form_widget(avis_form.commentaireAvis, {'attr': {'class': 'form-control', 'style': 'border: 0px solid black; width: 50%'}}) }}
+                        {{ form_errors(avis_form.commentaireAvis) }}
+                    </div>
+                    <div class="form-group mt-3">
+                        {{ form_label(avis_form.noteAvis, null, {'label_attr': {'style': 'font-weight: bold; color: #fff;'}}) }}
+                        {{ form_widget(avis_form.noteAvis, {'attr': {'class': 'form-control', 'style': 'border: 0px solid black; width: 15%'}}) }}
+                        {{ form_errors(avis_form.noteAvis) }}
+                    </div>
+
+                    <!-- Consentement pour le traitement des avis -->
+                    <div class="form-group mt-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="avisConsent" required>
+                            <label class="form-check-label" for="avisConsent">
+                                J'accepte que mon avis soit publié sur le site conformément à la <a href="{{ path('politique_confidentialite') }}">Politique de Confidentialité</a>.
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary mt-3" style="border-radius: 10px;">Soumettre</button>
+                {{ form_end(avis_form) }}
+            </div>
+        {% endif %}
+    {% else %}
+        <p class="text-center mt-5">Veuillez vous <a href="{{ path('app_login') }}" style="color: #ffb763; font-weight: bold;">connecter</a> pour ajouter un avis.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,78 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.3
+        env:
+          MYSQL_ROOT_PASSWORD: passroot
+          MYSQL_DATABASE: garage
+          MYSQL_USER: rageuser
+          MYSQL_PASSWORD: passgarage
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      # Étape 1 : Checkout du code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Étape 2 : Configuration PHP et Composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: intl, pdo_mysql, zip, gd, xml
+          tools: composer, phpunit, symfony-cli
+
+      # Étape 3 : Installer les dépendances avec Composer
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-scripts --no-interaction
+
+      # Étape 4 : Configurer l'environnement de test
+      - name: Setup .env.test file
+        run: |
+          echo "DATABASE_URL=mysql://root:passroot@mysql:3306/garage_test?serverVersion=8.3&charset=utf8mb4" > .env.test
+
+      # Étape 5 : Vérification du démarrage de MySQL
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          docker exec $(docker ps -q --filter "ancestor=mysql:8.3") mysqladmin ping --silent
+          docker logs $(docker ps -q --filter "ancestor=mysql:8.3") || true
+
+      # Étape 6 : Connexion à GitHub Container Registry (GHCR)
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # Étape 7 : Définir le repository en minuscule
+      - name: Set lowercase repository
+        id: repo
+        run: echo "repository_lowercase=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
+
+      # Étape 8 : Construire l'image Docker
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ env.repository_lowercase }}/symfony_project:latest .
+
+      # Étape 9 : Pousser l'image vers GHCR
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ env.repository_lowercase }}/symfony_project:latest

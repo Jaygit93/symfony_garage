@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5 p-4" style="border: 3px solid #8b8b8b; background: #5b6c86;">
+        <h2 class="text-center" style="color: #ffb763; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);">Mon Profil</h2>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                {{ form_start(form) }}
+                <div class="form-group mt-3">
+                    {{ form_label(form.nomUtilisateur, null, {'label_attr': {'style': 'font-weight: bold; color: #00839b;'}}) }}
+                    {{ form_widget(form.nomUtilisateur, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                    {{ form_errors(form.nomUtilisateur) }}
+                </div>
+                <div class="form-group mt-3">
+                    {{ form_label(form.prenomUtilisateur, null, {'label_attr': {'style': 'font-weight: bold; color: #00839b;'}}) }}
+                    {{ form_widget(form.prenomUtilisateur, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                    {{ form_errors(form.prenomUtilisateur) }}
+                </div>
+                <div class="form-group mt-3">
+                    {{ form_label(form.emailUtilisateur, null, {'label_attr': {'style': 'font-weight: bold; color: #00839b;'}}) }}
+                    {{ form_widget(form.emailUtilisateur, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                    {{ form_errors(form.emailUtilisateur) }}
+                </div>
+
+                <hr class="my-4" style="border-color: #BD3100;">
+
+                <h3 class="text-center" style="color: #BD3100; font-size: 2rem;">Changer le mot de passe</h3>
+                <div class="form-group mt-4">
+                    {{ form_label(form.currentPassword, null, {'label_attr': {'style': 'font-weight: bold; color: #00839b;'}}) }}
+                    {{ form_widget(form.currentPassword, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                    {{ form_errors(form.currentPassword) }}
+                </div>
+                <div class="form-group mt-4">
+                    {{ form_label(form.plainPassword, null, {'label_attr': {'style': 'font-weight: bold; color: #00839b;'}}) }}
+                    {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                    <small class="form-text text-muted">Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et être d'une longueur de 8 caractères minimum.</small>
+                    {{ form_errors(form.plainPassword) }}
+                </div>
+
+                <div class="form-group text-center mt-5">
+                    <button type="submit" class="btn btn-secondary" style="border-radius: 10px;">Enregistrer les modifications</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

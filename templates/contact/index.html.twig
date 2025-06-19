@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+<div class="container mt-5 p-4" style="background-color: #5b6c86; border: 3px solid #8b8b8b; color: #fff;">
+    <h1 class="text-center" style="font-size: 2rem; color: #ffb763; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);">Contactez-nous</h1>
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.nom, 'Nom', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.prenom, 'Prénom', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.email, 'Email', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.telephone, 'Téléphone', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.telephone, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.objet, 'Objet', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.objet, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.message, 'Message', {'label_attr': {'style': 'color: #ffb763;'}}) }}
+            {{ form_widget(form.message, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+        </div>
+        
+        <button type="submit" class="btn btn-secondary mt-3" style="border-radius: 10px; width: 0px; height: 0px;">Envoyer</button>
+    {{ form_end(form) }}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

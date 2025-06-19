@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block body %}
+<div class="container mt-5 p-4" style="background-color: #5b6c86; border: 3px solid #8b8b8b; color: #fff;">
+    <h1 class="text-center" style="font-size: 2rem; color: #ffb763; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);">Mentions légales</h1>
+    <p class="mt-4">
+        Nom ou raison sociale de l'éditeur: FakeCorp Inc.
+    </p>
+    <p>
+        Adresse du siège social: 97 rue Maginaire, 75001 Paris, France
+    </p>
+    <p>
+        Numéro de téléphone: 01 12 34 56 78
+    </p>
+    <p>
+        Email: Parrotgarage@monsite.fr
+    </p>
+    <p>
+        Numéro d'immatriculation au RCS: 987 654 321
+    </p>
+    <p>
+        Hébergeur: Web Hosting Ltd, 456 rue Virtuelle, 75002 Paris, France, contact@webhosting.com
+    </p>
+    <p>
+        Responsable de la publication: John Doe
+    </p>
+    <p>
+        Enregistrement CNIL: Non nécessaire
+    </p>
+    <p>
+        Cookies: Ce site utilise des cookies pour améliorer votre expérience. Pour plus de détails, consultez notre <a href="{{ path('politique_confidentialite') }}" style="color: rgb(13 14 253)">politique de confidentialité</a>.
+    </p>
+    <p>
+        Propriété intellectuelle: Tous les contenus présents sur ce site sont protégés par des droits d'auteur. 
+    </p>
+</div>
+{% endblock %}

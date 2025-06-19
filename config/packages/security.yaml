@@ -1,0 +1,41 @@
+security:
+    # Les encoders ne sont plus utilisés dans les versions récentes de Symfony.
+    # Utilisez directement les password hashers.
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
+
+    providers:
+        # Un fournisseur d'utilisateur en mémoire
+        users_in_memory: { memory: null }
+
+        # Fournisseur d'utilisateurs basé sur votre entité User
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: emailUtilisateur # Le champ de votre base de données pour l'email
+
+    firewalls:
+        # Pare-feu pour le mode dev
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Pare-feu principal pour l'authentification des utilisateurs
+        main:
+            # Suppression de l'option `anonymous`, non nécessaire
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login        # Nom de la route pour la page de connexion
+                check_path: app_login        # La route qui traite les informations du formulaire de connexion
+                default_target_path: homepage # Chemin où rediriger après la connexion
+                username_parameter: emailUtilisateur    # Champ utilisé pour l'email
+                password_parameter: motDePasseUtilisateur  # Champ utilisé pour le mot de passe
+            logout:
+                path: app_logout             # Nom de la route pour la déconnexion
+                target: homepage             # Où rediriger après la déconnexion
+
+    # Hiérarchie des rôles
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER

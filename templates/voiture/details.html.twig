@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Voiture{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center" style="color: #ffb763; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: poppins">
+        {{ voiture.marqueVoiture }} {{ voiture.modeleVoiture }}
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{voiture.imageVoitureUrl}}" class="card-img-top" alt="{{ voiture.modeleVoiture }}" style="height: auto; object-fit: cover; border-radius: 15px 15px 0 0; background-color: #5b6c86">
+        </div>
+        <div class="col-md-6">
+            <ul style="padding: 3rem;">
+                <li><strong>Kilométrage :</strong> {{ voiture.kilometrageVoiture }} km</li>
+                <li><strong>Année :</strong> {{ voiture.anneeVoiture }}</li>
+                <li><strong>Boîte de vitesse :</strong> {{ voiture.boiteVoiture }}</li>
+                <li><strong>Prix :</strong> {{ voiture.prixVoiture }} €</li>
+            </ul>
+        </div>
+    </div>
+
+    <h5 class="text-center mt-4" style="color: #BD3100; font-size: 2rem;">Équipements et Caractéristiques</h5>
+    <table class="table mt-3" style="background-color: #f8f9fa; border-radius: 10px;">
+        <thead>
+            <tr>
+                <th>Équipements</th>
+                <th>Caractéristiques</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ voiture.equipementsVoiture }}</td>
+                <td>{{ voiture.caracteristiquesVoiture }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Formulaire de témoignage -->
+    <h5 class="text-center mt-4" style="color: #BD3100; font-size: 2rem;">Ajouter un témoignage</h5>
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        {% if form is not null %}
+            {{ form_start(form, {'attr': {'class': 'mt-3'}}) }}
+            <div class="form-group">
+                {{ form_row(form.nomTemoignage, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                {{ form_row(form.commentaireTemoignage, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                {{ form_row(form.noteTemoignage, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px;'}}) }}
+                <button type="submit" class="btn btn-secondary mt-3" style="border-radius: 10px;">Soumettre</button>
+            {{ form_end(form) }}
+        {% else %}
+            <p>Vous avez déjà soumis un témoignage pour cette voiture.</p>
+        {% endif %}
+    {% else %}
+        <p><a href="{{ path('app_login') }}" style="color: #BD3100; font-weight: bold;">Connectez-vous</a> pour ajouter un témoignage.</p>
+    {% endif %}
+
+    <!-- Témoignages approuvés -->
+    <h5 class="text-center mt-4" style="color: #BD3100; font-size: 2rem;">Témoignages des clients</h5>
+    {% if temoignages|length > 0 %}
+        {% for temoignage in temoignages %}
+            <div class="temoignage border p-3 mt-3" style="border-radius: 10px; background-color: #ecf0f1;">
+                <p><strong>{{ temoignage.nomTemoignage }}</strong> ({{ temoignage.datePublicationTemoignage|date('d/m/Y') }})</p>
+                <p>
+                    {% for i in 1..temoignage.noteTemoignage %}
+                        ⭐
+                    {% endfor %}
+                </p>
+                <p>{{ temoignage.commentaireTemoignage }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Aucun témoignage pour cette voiture.</p>
+    {% endif %}
+</div>
+
+<!-- Intégration de Bootstrap via CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
